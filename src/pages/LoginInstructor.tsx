@@ -22,7 +22,7 @@ const LoginInstructor = () => {
 
     // Demo login
     toast.success("Anmeldung erfolgreich!");
-    // In production, navigate to dashboard
+    navigate("/home");
   };
 
   return (
