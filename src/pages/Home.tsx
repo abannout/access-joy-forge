@@ -82,7 +82,10 @@ const Home = () => {
           </button>
 
           {/* Mensa/Essen */}
-          <button className="p-6 bg-gradient-to-br from-primary/55 to-primary/45 rounded-2xl text-white shadow-md hover:shadow-lg transition-all hover:scale-105 active:scale-95">
+          <button 
+            onClick={() => window.location.href = '/mensa'}
+            className="p-6 bg-gradient-to-br from-primary/55 to-primary/45 rounded-2xl text-white shadow-md hover:shadow-lg transition-all hover:scale-105 active:scale-95"
+          >
             <div className="flex flex-col items-center gap-2">
               <Utensils className="h-8 w-8" />
               <span className="text-sm font-medium">Mensa/Essen</span>

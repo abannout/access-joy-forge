@@ -9,6 +9,7 @@ import AccountType from "./pages/AccountType";
 import LoginStudent from "./pages/LoginStudent";
 import LoginInstructor from "./pages/LoginInstructor";
 import Home from "./pages/Home";
+import Mensa from "./pages/Mensa";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/login/student" element={<LoginStudent />} />
           <Route path="/login/instructor" element={<LoginInstructor />} />
           <Route path="/home" element={<Home />} />
+          <Route path="/mensa" element={<Mensa />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
