@@ -1,10 +1,19 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import BlobBackground from "@/components/BlobBackground";
-import { ArrowLeft, Star } from "lucide-react";
+import { ArrowLeft, Star, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { Card } from "@/components/ui/card";
+
+interface Review {
+  id: number;
+  user: string;
+  rating: number;
+  comment: string;
+  date: string;
+}
 
 const MensaDetail = () => {
   const navigate = useNavigate();
@@ -15,6 +24,38 @@ const MensaDetail = () => {
   const [rating, setRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
   const [comment, setComment] = useState("");
+  const [reviews, setReviews] = useState<Review[]>([
+    {
+      id: 1,
+      user: "Anna M.",
+      rating: 5,
+      comment: "Sehr lecker! Kann ich nur empfehlen.",
+      date: "Vor 2 Tagen"
+    },
+    {
+      id: 2,
+      user: "Max K.",
+      rating: 4,
+      comment: "Gut gewürzt, könnte aber größer sein.",
+      date: "Vor 5 Tagen"
+    },
+    {
+      id: 3,
+      user: "Lisa W.",
+      rating: 3,
+      comment: "Okay, aber nichts Besonderes.",
+      date: "Vor 1 Woche"
+    }
+  ]);
+
+  const foodDetails = {
+    ingredients: "Reis, Gemüse, Gewürze, Öl",
+    allergens: "Kann Spuren von Gluten enthalten",
+    calories: "450 kcal",
+    protein: "12g",
+    carbs: "65g",
+    fat: "15g"
+  };
 
   const handleSubmitReview = () => {
     if (rating === 0) {
@@ -26,12 +67,23 @@ const MensaDetail = () => {
       return;
     }
 
+    const newReview: Review = {
+      id: reviews.length + 1,
+      user: "Du",
+      rating: rating,
+      comment: comment || "Keine Kommentar",
+      date: "Gerade eben"
+    };
+
+    setReviews([newReview, ...reviews]);
+
     toast({
       title: "Bewertung abgegeben!",
       description: "Vielen Dank für Ihre Bewertung",
     });
     
-    navigate("/mensa");
+    setRating(0);
+    setComment("");
   };
 
   const handleSkip = () => {
@@ -70,10 +122,42 @@ const MensaDetail = () => {
         </div>
 
         {/* Food Info */}
-        <div className="text-center space-y-1">
+        <div className="text-center space-y-2">
           <h2 className="text-2xl font-bold text-foreground">{foodItem.name}</h2>
-          <p className="text-sm text-muted-foreground">Das ist ein Angebot!</p>
+          <p className="text-sm text-muted-foreground">{foodItem.category}</p>
+          <p className="text-2xl font-bold text-primary">{foodItem.price}</p>
         </div>
+
+        {/* Food Details */}
+        <Card className="bg-white/80 backdrop-blur-sm border-none shadow-md p-5 space-y-3">
+          <h3 className="text-lg font-semibold text-foreground">Details</h3>
+          <div className="space-y-2 text-sm">
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Kalorien:</span>
+              <span className="font-medium text-foreground">{foodDetails.calories}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Eiweiß:</span>
+              <span className="font-medium text-foreground">{foodDetails.protein}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Kohlenhydrate:</span>
+              <span className="font-medium text-foreground">{foodDetails.carbs}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Fett:</span>
+              <span className="font-medium text-foreground">{foodDetails.fat}</span>
+            </div>
+          </div>
+          <div className="pt-2 border-t border-gray-200">
+            <p className="text-xs text-muted-foreground mb-1">Zutaten:</p>
+            <p className="text-sm text-foreground">{foodDetails.ingredients}</p>
+          </div>
+          <div className="pt-2 border-t border-gray-200">
+            <p className="text-xs text-muted-foreground mb-1">Allergene:</p>
+            <p className="text-sm text-foreground">{foodDetails.allergens}</p>
+          </div>
+        </Card>
 
         {/* Rating Section */}
         <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 space-y-4 shadow-md">
@@ -129,6 +213,44 @@ const MensaDetail = () => {
           >
             Bewertung abgeben
           </Button>
+        </div>
+
+        {/* Reviews Section */}
+        <div className="space-y-4 pt-4">
+          <h3 className="text-xl font-bold text-foreground">
+            Bewertungen ({reviews.length})
+          </h3>
+          
+          {reviews.map((review) => (
+            <Card key={review.id} className="bg-white/80 backdrop-blur-sm border-none shadow-md p-4 space-y-2">
+              <div className="flex items-start justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                    <User className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-foreground">{review.user}</p>
+                    <p className="text-xs text-muted-foreground">{review.date}</p>
+                  </div>
+                </div>
+                <div className="flex gap-0.5">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star
+                      key={star}
+                      className={`h-4 w-4 ${
+                        star <= review.rating
+                          ? "fill-primary text-primary"
+                          : "text-gray-300"
+                      }`}
+                    />
+                  ))}
+                </div>
+              </div>
+              {review.comment && (
+                <p className="text-sm text-foreground pl-13">{review.comment}</p>
+              )}
+            </Card>
+          ))}
         </div>
       </main>
     </div>
