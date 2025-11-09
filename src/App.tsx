@@ -10,6 +10,7 @@ import LoginStudent from "./pages/LoginStudent";
 import LoginInstructor from "./pages/LoginInstructor";
 import Home from "./pages/Home";
 import Mensa from "./pages/Mensa";
+import MensaDetail from "./pages/MensaDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/login/instructor" element={<LoginInstructor />} />
           <Route path="/home" element={<Home />} />
           <Route path="/mensa" element={<Mensa />} />
+          <Route path="/mensa-detail" element={<MensaDetail />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

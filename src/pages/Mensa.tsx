@@ -107,7 +107,8 @@ const Mensa = () => {
         {currentMenu.map((item, index) => (
           <Card 
             key={index}
-            className="p-4 bg-white/80 backdrop-blur-sm border-none shadow-md hover:shadow-lg transition-shadow"
+            onClick={() => navigate("/mensa-detail", { state: { item } })}
+            className="p-4 bg-white/80 backdrop-blur-sm border-none shadow-md hover:shadow-lg transition-shadow cursor-pointer"
           >
             <div className="flex items-start justify-between">
               <div className="flex-1">
