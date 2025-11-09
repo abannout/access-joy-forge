@@ -1,10 +1,16 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BlobBackground from "@/components/BlobBackground";
-import { ArrowLeft, ChevronLeft, ChevronRight, Bell } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight, Bell, Users } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const locations = [
   "Mensa Deutz/Süd",
@@ -37,9 +43,16 @@ const mensaMenus = {
 const Mensa = () => {
   const navigate = useNavigate();
   const [currentLocationIndex, setCurrentLocationIndex] = useState(0);
+  const [isCapacityDialogOpen, setIsCapacityDialogOpen] = useState(false);
+  const [peopleCount, setPeopleCount] = useState<Record<string, number>>({
+    "Mensa Deutz/Süd": 23,
+    "Mensa Gummersbach": 15,
+    "Mensa Südstadt": 31
+  });
   
   const currentLocation = locations[currentLocationIndex];
   const currentMenu = mensaMenus[currentLocation];
+  const currentCount = peopleCount[currentLocation];
 
   const handlePrevLocation = () => {
     setCurrentLocationIndex((prev) => (prev - 1 + locations.length) % locations.length);
@@ -48,6 +61,22 @@ const Mensa = () => {
   const handleNextLocation = () => {
     setCurrentLocationIndex((prev) => (prev + 1) % locations.length);
   };
+
+  const handleEatingNow = () => {
+    setPeopleCount(prev => ({
+      ...prev,
+      [currentLocation]: prev[currentLocation] + 1
+    }));
+    setIsCapacityDialogOpen(false);
+  };
+
+  const getCapacityStatus = (count: number) => {
+    if (count < 20) return { text: "Viel Platz", color: "text-green-600" };
+    if (count < 40) return { text: "Mittlere Auslastung", color: "text-orange-600" };
+    return { text: "Sehr voll", color: "text-red-600" };
+  };
+
+  const capacityStatus = getCapacityStatus(currentCount);
 
   return (
     <div className="min-h-screen relative pb-safe">
@@ -101,6 +130,18 @@ const Mensa = () => {
           </div>
         </div>
       </header>
+
+      {/* Capacity Button */}
+      <div className="px-6 pt-6">
+        <Button
+          onClick={() => setIsCapacityDialogOpen(true)}
+          className="w-full bg-white/80 backdrop-blur-sm border border-primary/20 text-foreground hover:bg-white/90 shadow-md"
+          variant="outline"
+        >
+          <Users className="h-5 w-5 mr-2" />
+          <span className="font-semibold">Mensa Auslastung anzeigen</span>
+        </Button>
+      </div>
 
       {/* Menu Items */}
       <main className="px-6 pt-6 pb-8 space-y-3">
@@ -177,6 +218,53 @@ const Mensa = () => {
           </Button>
         </div>
       </nav>
+
+      {/* Capacity Dialog */}
+      <Dialog open={isCapacityDialogOpen} onOpenChange={setIsCapacityDialogOpen}>
+        <DialogContent className="sm:max-w-md mx-4 rounded-2xl bg-gradient-to-br from-background to-muted border-primary/20">
+          <DialogHeader>
+            <DialogTitle className="text-center text-primary font-bold text-lg">
+              Aktuelle Auslastung der Mensa
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-4">
+            <div className="text-center space-y-2">
+              <p className={`text-2xl font-bold ${capacityStatus.color}`}>
+                {capacityStatus.text}
+              </p>
+              <p className="text-xl font-semibold text-foreground">
+                {currentCount} Personen essen gerade hier
+              </p>
+            </div>
+
+            <div className="bg-muted/50 rounded-lg p-4">
+              <p className="text-sm text-muted-foreground text-center leading-relaxed">
+                • Hinweis: Die Anzahl der Personen in der Mensa kann abweichen.
+                <br />
+                Es werden nur diejenigen Personen gezählt, die unsere App nutzen
+                und auf „Ich esse jetzt" geklickt haben.
+              </p>
+            </div>
+
+            <div className="flex gap-3 pt-2">
+              <Button
+                onClick={handleEatingNow}
+                className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold"
+              >
+                Ich esse jetzt
+              </Button>
+              <Button
+                onClick={() => setIsCapacityDialogOpen(false)}
+                variant="outline"
+                className="flex-1 border-primary/30 text-foreground hover:bg-muted"
+              >
+                Ich esse später
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
