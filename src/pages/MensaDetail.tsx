@@ -91,19 +91,18 @@ const MensaDetail = () => {
   };
 
   return (
-    <div className="min-h-screen relative pb-safe">
-      <BlobBackground />
+    <div className="min-h-screen relative pb-safe bg-gradient-to-br from-[#FFB5B5] via-[#FFB5D5] to-[#FFB5E5]">
       
       {/* Header */}
-      <header className="sticky top-0 z-10 bg-gradient-to-b from-primary/95 to-primary/80 backdrop-blur-sm text-white">
-        <div className="flex items-center justify-between p-4 px-6">
+      <header className="pt-4 px-6 pb-4">
+        <div className="flex items-center justify-between">
           <button 
             onClick={() => navigate("/mensa")}
             className="p-2 hover:bg-white/10 rounded-full transition-colors"
           >
-            <ArrowLeft className="h-6 w-6" />
+            <ArrowLeft className="h-6 w-6 text-white" />
           </button>
-          <h1 className="text-lg font-bold">MENSA-SERVICE</h1>
+          <h1 className="text-lg font-bold text-white">Mensa-Service</h1>
           <div className="w-10"></div>
         </div>
       </header>
@@ -123,14 +122,14 @@ const MensaDetail = () => {
 
         {/* Food Info */}
         <div className="text-center space-y-2">
-          <h2 className="text-2xl font-bold text-foreground">{foodItem.name}</h2>
-          <p className="text-sm text-muted-foreground">{foodItem.category}</p>
-          <p className="text-2xl font-bold text-primary">{foodItem.price}</p>
+          <h2 className="text-2xl font-bold text-white">{foodItem.name}</h2>
+          <p className="text-sm text-white/80">{foodItem.category}</p>
+          <p className="text-2xl font-bold text-white">{foodItem.price}</p>
         </div>
 
         {/* Food Details */}
-        <Card className="bg-white/80 backdrop-blur-sm border-none shadow-md p-5 space-y-3">
-          <h3 className="text-lg font-semibold text-foreground">Details</h3>
+        <Card className="bg-white backdrop-blur-md border-none shadow-lg rounded-3xl p-5 space-y-3">
+          <h3 className="text-lg font-semibold text-[#D5006D]">Details</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
               <span className="text-muted-foreground">Kalorien:</span>
@@ -160,9 +159,9 @@ const MensaDetail = () => {
         </Card>
 
         {/* Rating Section */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 space-y-4 shadow-md">
+        <div className="bg-white backdrop-blur-md rounded-3xl p-6 space-y-4 shadow-lg">
           <div>
-            <h3 className="text-lg font-semibold text-foreground mb-3">Bewertung</h3>
+            <h3 className="text-lg font-semibold text-[#D5006D] mb-3">Bewertung</h3>
             <div className="flex gap-2 justify-center">
               {[1, 2, 3, 4, 5].map((star) => (
                 <button
@@ -203,13 +202,13 @@ const MensaDetail = () => {
           <Button
             onClick={handleSkip}
             variant="outline"
-            className="flex-1 h-12 text-base"
+            className="flex-1 h-12 text-base bg-white border-[#D5006D] text-[#D5006D] hover:bg-white/90 rounded-3xl"
           >
             Überspringen
           </Button>
           <Button
             onClick={handleSubmitReview}
-            className="flex-1 h-12 text-base bg-primary hover:bg-primary/90"
+            className="flex-1 h-12 text-base bg-[#D5006D] hover:bg-[#B00058] text-white rounded-3xl"
           >
             Bewertung abgeben
           </Button>
@@ -217,12 +216,12 @@ const MensaDetail = () => {
 
         {/* Reviews Section */}
         <div className="space-y-4 pt-4">
-          <h3 className="text-xl font-bold text-foreground">
+          <h3 className="text-xl font-bold text-white">
             Bewertungen ({reviews.length})
           </h3>
           
           {reviews.map((review) => (
-            <Card key={review.id} className="bg-white/80 backdrop-blur-sm border-none shadow-md p-4 space-y-2">
+            <Card key={review.id} className="bg-white backdrop-blur-md border-none shadow-lg rounded-3xl p-4 space-y-2">
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">

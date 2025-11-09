@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import BlobBackground from "@/components/BlobBackground";
-import { ArrowLeft, ChevronLeft, ChevronRight, Bell, Users } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight, Bell, Users, MapPin, Utensils, MessageCircle } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -20,23 +19,22 @@ const locations = [
 
 const mensaMenus = {
   "Mensa Deutz/Süd": [
-    { name: "Schmorgurken", category: "Vegetarisch", price: "3.50€" },
-    { name: "Rindergulasch mit Reis", category: "Fleisch", price: "4.20€" },
-    { name: "Gefüllter Spay mit Käse", category: "Vegetarisch", price: "3.80€" },
-    { name: "Paprika Hack", category: "Fleisch", price: "4.00€" },
-    { name: "Königsberger Klopse mit Nudeln", category: "Klassiker", price: "4.50€" }
+    { name: "Gemüsesuppe", category: "Vegetarisch", price: "3.50€" },
+    { name: "Schnitzel mit Pommes", category: "Fleisch", price: "4.20€" },
+    { name: "Hähnchen-Curry mit Reis", category: "Fleisch", price: "3.80€" },
+    { name: "Veggie Bowl", category: "Vegan", price: "4.00€" }
   ],
   "Mensa Gummersbach": [
-    { name: "Käsespätzle", category: "Vegetarisch", price: "3.60€" },
-    { name: "Hähnchenbrust mit Reis", category: "Fleisch", price: "4.30€" },
-    { name: "Gemüsecurry", category: "Vegan", price: "3.90€" },
-    { name: "Schnitzel mit Pommes", category: "Klassiker", price: "4.80€" }
+    { name: "Gemüsesuppe", category: "Vegetarisch", price: "3.60€" },
+    { name: "Schnitzel mit Pommes", category: "Fleisch", price: "4.30€" },
+    { name: "Hähnchen-Curry mit Reis", category: "Fleisch", price: "3.90€" },
+    { name: "Veggie Bowl", category: "Vegan", price: "4.80€" }
   ],
   "Mensa Südstadt": [
-    { name: "Pasta Carbonara", category: "Klassiker", price: "3.70€" },
-    { name: "Linseneintopf", category: "Vegan", price: "3.40€" },
-    { name: "Putenschnitzel", category: "Fleisch", price: "4.40€" },
-    { name: "Veggie Burger", category: "Vegetarisch", price: "4.10€" }
+    { name: "Gemüsesuppe", category: "Vegetarisch", price: "3.70€" },
+    { name: "Schnitzel mit Pommes", category: "Fleisch", price: "3.40€" },
+    { name: "Hähnchen-Curry mit Reis", category: "Fleisch", price: "4.40€" },
+    { name: "Veggie Bowl", category: "Vegan", price: "4.10€" }
   ]
 };
 
@@ -79,142 +77,128 @@ const Mensa = () => {
   const capacityStatus = getCapacityStatus(currentCount);
 
   return (
-    <div className="min-h-screen relative pb-safe">
-      <BlobBackground />
+    <div className="min-h-screen relative pb-20 bg-gradient-to-br from-[#FFB5B5] via-[#FFB5D5] to-[#FFB5E5]">
       
       {/* Header */}
-      <header className="sticky top-0 z-10 bg-gradient-to-b from-primary/95 to-primary/80 backdrop-blur-sm text-white">
-        <div className="flex items-center justify-between p-4 px-6">
-          <button 
-            onClick={() => navigate("/home")}
-            className="p-2 hover:bg-white/10 rounded-full transition-colors"
-          >
-            <ArrowLeft className="h-6 w-6" />
-          </button>
-          <h1 className="text-lg font-bold">MENSA-SERVICE</h1>
+      <header className="pt-4 px-6 pb-6">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3 flex-1">
+            <Avatar className="h-14 w-14 border-2 border-white/30">
+              <AvatarImage src="https://api.dicebear.com/7.x/avataaars/svg?seed=Kim" />
+              <AvatarFallback className="bg-white text-primary">K</AvatarFallback>
+            </Avatar>
+            <div>
+              <h1 className="text-lg font-bold text-white">Mensa-Service</h1>
+              <p className="text-sm text-white/90">Speiseplan & Bewertungen</p>
+            </div>
+          </div>
           <button className="p-2 hover:bg-white/10 rounded-full transition-colors">
-            <Bell className="h-6 w-6" />
+            <Bell className="h-6 w-6 text-white" />
           </button>
         </div>
 
-        {/* User Info */}
-        <div className="px-6 pb-4">
-          <div className="flex items-center gap-3 mb-4">
-            <Avatar className="h-12 w-12 border-2 border-white/30">
-              <AvatarImage src="https://api.dicebear.com/7.x/avataaars/svg?seed=Student" />
-              <AvatarFallback className="bg-white text-primary">S</AvatarFallback>
-            </Avatar>
-            <p className="text-base font-medium">Hallo, Student</p>
+        {/* Mensa Standorte Section */}
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 text-white">
+            <Utensils className="h-5 w-5" />
+            <h2 className="text-base font-semibold">Mensa Standorte</h2>
           </div>
 
-          {/* Location Selector */}
-          <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-3 flex items-center justify-between">
-            <button
-              onClick={handlePrevLocation}
-              className="p-2 hover:bg-white/20 rounded-full transition-colors"
-            >
-              <ChevronLeft className="h-5 w-5" />
-            </button>
-            
-            <div className="flex items-center gap-2">
-              <span className="text-lg">🏫</span>
-              <span className="text-sm font-medium">{currentLocation}</span>
+          {/* Location Selector with Glass Effect */}
+          <div className="bg-white/20 backdrop-blur-md rounded-3xl p-4 border border-white/30 shadow-lg">
+            <div className="flex items-center justify-center gap-2 text-white">
+              <MapPin className="h-5 w-5" />
+              <span className="text-base font-semibold">{currentLocation.replace("Mensa ", "")}</span>
             </div>
-
-            <button
-              onClick={handleNextLocation}
-              className="p-2 hover:bg-white/20 rounded-full transition-colors"
-            >
-              <ChevronRight className="h-5 w-5" />
-            </button>
           </div>
         </div>
       </header>
 
-      {/* Capacity Button */}
-      <div className="px-6 pt-6">
-        <Button
-          onClick={() => setIsCapacityDialogOpen(true)}
-          className="w-full bg-white/80 backdrop-blur-sm border border-primary/20 text-foreground hover:bg-white/90 shadow-md"
-          variant="outline"
-        >
-          <Users className="h-5 w-5 mr-2" />
-          <span className="font-semibold">Mensa Auslastung anzeigen</span>
-        </Button>
-      </div>
-
       {/* Menu Items */}
-      <main className="px-6 pt-6 pb-8 space-y-3">
+      <main className="px-6 space-y-3">
         {currentMenu.map((item, index) => (
           <Card 
             key={index}
             onClick={() => navigate("/mensa-detail", { state: { item } })}
-            className="p-4 bg-white/80 backdrop-blur-sm border-none shadow-md hover:shadow-lg transition-shadow cursor-pointer"
+            className="p-4 bg-white backdrop-blur-md border-none shadow-md hover:shadow-lg transition-all cursor-pointer rounded-3xl"
           >
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <h3 className="font-semibold text-foreground mb-1">{item.name}</h3>
-                <p className="text-sm text-muted-foreground">{item.category}</p>
-              </div>
-              <div className="text-right">
-                <p className="text-lg font-bold text-primary">{item.price}</p>
-              </div>
+            <div className="text-center">
+              <h3 className="font-semibold text-[#D5006D]">{item.name}</h3>
             </div>
           </Card>
         ))}
 
-        {/* Special Card */}
-        <Card className="p-4 bg-gradient-to-br from-primary/70 to-primary/50 border-none text-white shadow-lg">
-          <div className="flex items-center gap-3">
-            <div className="p-3 bg-white/20 rounded-full">
-              <span className="text-2xl">🍽️</span>
+        {/* Capacity Button with Glass Effect */}
+        <button
+          onClick={() => setIsCapacityDialogOpen(true)}
+          className="w-full bg-[#D5006D] backdrop-blur-md border border-white/20 text-white hover:bg-[#B00058] transition-all shadow-lg rounded-3xl p-4 font-semibold"
+        >
+          Mensa-Auslastung ansehen
+        </button>
+
+        {/* Review Section */}
+        <Card className="bg-white backdrop-blur-md border-none shadow-lg rounded-3xl p-5">
+          <div className="flex items-start gap-4">
+            <div className="flex-shrink-0">
+              <div className="w-12 h-12 rounded-full bg-[#D5006D] flex items-center justify-center">
+                <MessageCircle className="h-6 w-6 text-white" />
+              </div>
             </div>
-            <div>
-              <h3 className="font-semibold text-sm mb-1">Tagesgericht</h3>
-              <p className="text-xs opacity-90">Jeden Tag ein neues Angebot!</p>
+            <div className="flex-1">
+              <h3 className="font-bold text-[#D5006D] mb-1">Bewertung:</h3>
+              <p className="text-sm text-[#D5006D]">"Schnitzel heute sehr knusprig!"</p>
             </div>
           </div>
         </Card>
       </main>
 
       {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-primary/95 backdrop-blur-sm border-t border-white/10 px-6 py-3 pb-safe">
+      <nav className="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-md border-t border-white/20 px-6 py-3 pb-safe shadow-lg">
         <div className="flex items-center justify-around">
           <Button 
             variant="ghost" 
             size="sm"
             onClick={() => navigate("/home")}
-            className="flex flex-col items-center gap-1 text-white/70 hover:text-white hover:bg-white/10"
+            className="flex flex-col items-center gap-1 text-[#FFB5D5] hover:text-[#D5006D] hover:bg-transparent"
           >
-            <span className="text-lg">🏠</span>
-            <span className="text-xs">Home</span>
+            <span className="text-2xl">🏠</span>
+            <span className="text-xs font-medium">HOME</span>
           </Button>
           
           <Button 
             variant="ghost" 
             size="sm"
-            className="flex flex-col items-center gap-1 text-white hover:bg-white/10"
+            className="flex flex-col items-center gap-1 text-[#FFB5D5] hover:text-[#D5006D] hover:bg-transparent"
           >
-            <span className="text-lg">🍽️</span>
-            <span className="text-xs">Mensa</span>
+            <span className="text-2xl">🔍</span>
+            <span className="text-xs font-medium">RAUMFINDER</span>
           </Button>
           
           <Button 
             variant="ghost" 
             size="sm"
-            className="flex flex-col items-center gap-1 text-white/70 hover:text-white hover:bg-white/10"
+            className="flex flex-col items-center gap-1 text-[#D5006D] hover:bg-transparent"
           >
-            <span className="text-lg">📅</span>
-            <span className="text-xs">Plan</span>
+            <span className="text-2xl">🍽️</span>
+            <span className="text-xs font-medium">MENSA-SERVICE</span>
           </Button>
           
           <Button 
             variant="ghost" 
             size="sm"
-            className="flex flex-col items-center gap-1 text-white/70 hover:text-white hover:bg-white/10"
+            className="flex flex-col items-center gap-1 text-[#FFB5D5] hover:text-[#D5006D] hover:bg-transparent"
           >
-            <span className="text-lg">👤</span>
-            <span className="text-xs">Profil</span>
+            <span className="text-2xl">👥</span>
+            <span className="text-xs font-medium">COMMUNITY</span>
+          </Button>
+
+          <Button 
+            variant="ghost" 
+            size="sm"
+            className="flex flex-col items-center gap-1 text-[#FFB5D5] hover:text-[#D5006D] hover:bg-transparent"
+          >
+            <span className="text-2xl">🤖</span>
+            <span className="text-xs font-medium">ASSISTENT</span>
           </Button>
         </div>
       </nav>
