@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, ChevronLeft, ChevronRight, Bell, Users, MapPin, Utensils, MessageCircle } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -10,6 +10,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+  type CarouselApi,
+} from "@/components/ui/carousel";
 
 const locations = [
   "Mensa Deutz/Süd",
@@ -42,11 +50,20 @@ const Mensa = () => {
   const navigate = useNavigate();
   const [currentLocationIndex, setCurrentLocationIndex] = useState(0);
   const [isCapacityDialogOpen, setIsCapacityDialogOpen] = useState(false);
+  const [carouselApi, setCarouselApi] = useState<CarouselApi>();
   const [peopleCount, setPeopleCount] = useState<Record<string, number>>({
     "Mensa Deutz/Süd": 23,
     "Mensa Gummersbach": 15,
     "Mensa Südstadt": 31
   });
+
+  useEffect(() => {
+    if (!carouselApi) return;
+
+    carouselApi.on("select", () => {
+      setCurrentLocationIndex(carouselApi.selectedScrollSnap());
+    });
+  }, [carouselApi]);
   
   const currentLocation = locations[currentLocationIndex];
   const currentMenu = mensaMenus[currentLocation];
@@ -104,13 +121,30 @@ const Mensa = () => {
             <h2 className="text-base font-semibold">Mensa Standorte</h2>
           </div>
 
-          {/* Location Selector with Glass Effect */}
-          <div className="bg-white/20 backdrop-blur-md rounded-3xl p-4 border border-white/30 shadow-lg">
-            <div className="flex items-center justify-center gap-2 text-white">
-              <MapPin className="h-5 w-5" />
-              <span className="text-base font-semibold">{currentLocation.replace("Mensa ", "")}</span>
-            </div>
-          </div>
+          {/* Location Carousel with Glass Effect */}
+          <Carousel 
+            setApi={setCarouselApi}
+            className="w-full"
+            opts={{
+              align: "center",
+              loop: true,
+            }}
+          >
+            <CarouselContent>
+              {locations.map((location, index) => (
+                <CarouselItem key={index}>
+                  <div className="bg-white/20 backdrop-blur-md rounded-3xl p-4 border border-white/30 shadow-lg">
+                    <div className="flex items-center justify-center gap-2 text-white">
+                      <MapPin className="h-5 w-5" />
+                      <span className="text-base font-semibold">{location.replace("Mensa ", "")}</span>
+                    </div>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="left-0 bg-white/20 backdrop-blur-md border-white/30 text-white hover:bg-white/30" />
+            <CarouselNext className="right-0 bg-white/20 backdrop-blur-md border-white/30 text-white hover:bg-white/30" />
+          </Carousel>
         </div>
       </header>
 
