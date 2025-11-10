@@ -26,18 +26,21 @@ const LoginInstructor = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 relative overflow-hidden bg-gradient-to-br from-[#FFB5B5] via-[#FFB5D5] to-[#FFB5E5]">
-      {/* White blob shapes */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-white/40 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4"></div>
-      <div className="absolute bottom-0 left-0 w-80 h-80 bg-white/40 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4"></div>
+      {/* White blob shapes - larger and more visible */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-white rounded-full -translate-y-1/3 translate-x-1/3"></div>
+      <div className="absolute bottom-0 left-0 w-[450px] h-[450px] bg-white rounded-full translate-y-1/3 -translate-x-1/3"></div>
       
-      <div className="w-full max-w-md space-y-6 animate-in slide-in-from-bottom duration-500 z-10">
-        {/* Logo/Illustration */}
-        <div className="flex justify-center mb-2">
-          <img 
-            src={instructorIllustration} 
-            alt="TH Connect Instructor" 
-            className="w-24 h-24 object-contain"
-          />
+      <div className="w-full max-w-md space-y-4 animate-in slide-in-from-bottom duration-500 z-10">
+        {/* Logo/Illustration with TH Connect text */}
+        <div className="flex flex-col items-center gap-2 mb-6">
+          <div className="bg-white rounded-3xl p-4 shadow-md">
+            <img 
+              src={instructorIllustration} 
+              alt="TH Connect Instructor" 
+              className="w-20 h-20 object-contain"
+            />
+          </div>
+          <h1 className="text-2xl font-bold text-[#FF6B35]">TH Connect</h1>
         </div>
 
         {/* White card with form */}
