@@ -33,16 +33,16 @@ const mensaMenus = {
     { name: "Veggie Bowl", category: "Vegan", price: "4.00€" }
   ],
   "Mensa Gummersbach": [
-    { name: "Gemüsesuppe", category: "Vegetarisch", price: "3.60€" },
-    { name: "Schnitzel mit Pommes", category: "Fleisch", price: "4.30€" },
-    { name: "Hähnchen-Curry mit Reis", category: "Fleisch", price: "3.90€" },
-    { name: "Veggie Bowl", category: "Vegan", price: "4.80€" }
+    { name: "Tomatensuppe", category: "Vegetarisch", price: "3.30€" },
+    { name: "Lasagne Bolognese", category: "Fleisch", price: "4.50€" },
+    { name: "Pasta Carbonara", category: "Fleisch", price: "4.10€" },
+    { name: "Buddha Bowl", category: "Vegan", price: "4.20€" }
   ],
   "Mensa Südstadt": [
-    { name: "Gemüsesuppe", category: "Vegetarisch", price: "3.70€" },
-    { name: "Schnitzel mit Pommes", category: "Fleisch", price: "3.40€" },
-    { name: "Hähnchen-Curry mit Reis", category: "Fleisch", price: "4.40€" },
-    { name: "Veggie Bowl", category: "Vegan", price: "4.10€" }
+    { name: "Kürbissuppe", category: "Vegetarisch", price: "3.40€" },
+    { name: "Pizza Margherita", category: "Vegetarisch", price: "3.90€" },
+    { name: "Döner Kebab", category: "Fleisch", price: "4.30€" },
+    { name: "Falafel Wrap", category: "Vegan", price: "3.80€" }
   ]
 };
 
