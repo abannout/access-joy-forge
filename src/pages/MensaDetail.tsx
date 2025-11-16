@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import BlobBackground from "@/components/BlobBackground";
 import { ArrowLeft, Star, User } from "lucide-react";
@@ -24,6 +24,7 @@ const MensaDetail = () => {
   const [rating, setRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
   const [comment, setComment] = useState("");
+  const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
   const [reviews, setReviews] = useState<Review[]>([
     {
       id: 1,
@@ -47,6 +48,18 @@ const MensaDetail = () => {
       date: "Vor 1 Woche"
     }
   ]);
+
+  // Auto-rotate reviews every 5-10 seconds
+  useEffect(() => {
+    if (reviews.length === 0) return;
+
+    const randomInterval = Math.floor(Math.random() * 5000) + 5000; // 5-10 seconds
+    const timer = setInterval(() => {
+      setCurrentReviewIndex((prev) => (prev + 1) % reviews.length);
+    }, randomInterval);
+
+    return () => clearInterval(timer);
+  }, [reviews.length]);
 
   const foodDetails = {
     ingredients: "Reis, Gemüse, Gewürze, Öl",
@@ -214,13 +227,28 @@ const MensaDetail = () => {
           </Button>
         </div>
 
-        {/* Reviews Section */}
-        <div className="space-y-4 pt-4">
-          <h3 className="text-xl font-bold text-white">
-            Bewertungen ({reviews.length})
-          </h3>
-          
-          {reviews.map((review) => (
+        {/* Reviews Section - Auto-rotating */}
+        {reviews.length > 0 && (
+          <div className="space-y-4 pt-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-xl font-bold text-white">
+                Bewertungen ({reviews.length})
+              </h3>
+              <div className="flex gap-1">
+                {reviews.map((_, index) => (
+                  <div
+                    key={index}
+                    className={`h-2 rounded-full transition-all duration-300 ${
+                      index === currentReviewIndex 
+                        ? 'w-8 bg-white' 
+                        : 'w-2 bg-white/40'
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
+            
+            {reviews.slice(currentReviewIndex, currentReviewIndex + 1).map((review) => (
             <Card key={review.id} className="bg-white backdrop-blur-md border-none shadow-lg rounded-3xl p-4 space-y-2">
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
@@ -250,7 +278,8 @@ const MensaDetail = () => {
               )}
             </Card>
           ))}
-        </div>
+          </div>
+        )}
       </main>
     </div>
   );
