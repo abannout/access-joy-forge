@@ -51,11 +51,20 @@ const Mensa = () => {
   const [currentLocationIndex, setCurrentLocationIndex] = useState(0);
   const [isCapacityDialogOpen, setIsCapacityDialogOpen] = useState(false);
   const [carouselApi, setCarouselApi] = useState<CarouselApi>();
+  const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
   const [peopleCount, setPeopleCount] = useState<Record<string, number>>({
     "Mensa Deutz/Süd": 23,
     "Mensa Gummersbach": 15,
     "Mensa Südstadt": 31
   });
+
+  const reviews = [
+    "Schnitzel heute sehr knusprig!",
+    "Die Gemüsesuppe ist wirklich lecker!",
+    "Perfekte Portion, bin satt geworden!",
+    "Freundliches Personal heute!",
+    "Curry war richtig gut gewürzt!"
+  ];
 
   useEffect(() => {
     if (!carouselApi) return;
@@ -64,6 +73,15 @@ const Mensa = () => {
       setCurrentLocationIndex(carouselApi.selectedScrollSnap());
     });
   }, [carouselApi]);
+
+  // Auto-rotate reviews every 5 seconds
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentReviewIndex((prev) => (prev + 1) % reviews.length);
+    }, 5000);
+
+    return () => clearInterval(timer);
+  }, [reviews.length]);
   
   const currentLocation = locations[currentLocationIndex];
   const currentMenu = mensaMenus[currentLocation];
@@ -170,7 +188,7 @@ const Mensa = () => {
           Mensa-Auslastung ansehen
         </button>
 
-        {/* Review Section */}
+        {/* Review Section - Auto-rotating */}
         <Card className="bg-white backdrop-blur-md border-none shadow-lg rounded-3xl p-5">
           <div className="flex items-start gap-4">
             <div className="flex-shrink-0">
@@ -179,8 +197,22 @@ const Mensa = () => {
               </div>
             </div>
             <div className="flex-1">
-              <h3 className="font-bold text-[#D5006D] mb-1">Bewertung:</h3>
-              <p className="text-sm text-[#D5006D]">"Schnitzel heute sehr knusprig!"</p>
+              <div className="flex items-center justify-between mb-1">
+                <h3 className="font-bold text-[#D5006D]">Bewertung:</h3>
+                <div className="flex gap-1">
+                  {reviews.map((_, index) => (
+                    <div
+                      key={index}
+                      className={`h-1.5 rounded-full transition-all duration-300 ${
+                        index === currentReviewIndex 
+                          ? 'w-6 bg-[#D5006D]' 
+                          : 'w-1.5 bg-[#D5006D]/30'
+                      }`}
+                    />
+                  ))}
+                </div>
+              </div>
+              <p className="text-sm text-[#D5006D]">"{reviews[currentReviewIndex]}"</p>
             </div>
           </div>
         </Card>
