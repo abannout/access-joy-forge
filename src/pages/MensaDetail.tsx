@@ -19,7 +19,13 @@ const MensaDetail = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
-  const foodItem = location.state?.item || { name: "Gericht", category: "Kategorie", price: "0.00€" };
+  const foodItem = location.state?.item || { 
+    name: "Gericht", 
+    category: "Kategorie", 
+    price: "0.00€",
+    notes: [],
+    prices: { students: 0, employees: 0, others: 0 }
+  };
   
   const [rating, setRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
@@ -61,13 +67,13 @@ const MensaDetail = () => {
     return () => clearInterval(timer);
   }, [reviews.length]);
 
-  const foodDetails = {
-    ingredients: "Reis, Gemüse, Gewürze, Öl",
-    allergens: "Kann Spuren von Gluten enthalten",
-    calories: "450 kcal",
-    protein: "12g",
-    carbs: "65g",
-    fat: "15g"
+  // Extract notes/allergens from API data
+  const notes = foodItem.notes || [];
+  const prices = foodItem.prices || {};
+
+  const formatPrice = (price: number | undefined): string => {
+    if (price === undefined) return "N/A";
+    return `${price.toFixed(2)}€`;
   };
 
   const handleSubmitReview = () => {
@@ -143,32 +149,52 @@ const MensaDetail = () => {
         {/* Food Details */}
         <Card className="bg-white backdrop-blur-md border-none shadow-lg rounded-3xl p-5 space-y-3">
           <h3 className="text-lg font-semibold text-[#D5006D]">Details</h3>
+          
+          {/* Prices */}
           <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Kalorien:</span>
-              <span className="font-medium text-foreground">{foodDetails.calories}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Eiweiß:</span>
-              <span className="font-medium text-foreground">{foodDetails.protein}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Kohlenhydrate:</span>
-              <span className="font-medium text-foreground">{foodDetails.carbs}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Fett:</span>
-              <span className="font-medium text-foreground">{foodDetails.fat}</span>
-            </div>
+            <p className="text-xs text-muted-foreground font-medium">Preise:</p>
+            {prices.students !== undefined && (
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Studierende:</span>
+                <span className="font-medium text-foreground">{formatPrice(prices.students)}</span>
+              </div>
+            )}
+            {prices.employees !== undefined && (
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Mitarbeiter:</span>
+                <span className="font-medium text-foreground">{formatPrice(prices.employees)}</span>
+              </div>
+            )}
+            {prices.others !== undefined && (
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Gäste:</span>
+                <span className="font-medium text-foreground">{formatPrice(prices.others)}</span>
+              </div>
+            )}
+            {prices.pupils !== undefined && (
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Schüler:</span>
+                <span className="font-medium text-foreground">{formatPrice(prices.pupils)}</span>
+              </div>
+            )}
           </div>
-          <div className="pt-2 border-t border-gray-200">
-            <p className="text-xs text-muted-foreground mb-1">Zutaten:</p>
-            <p className="text-sm text-foreground">{foodDetails.ingredients}</p>
-          </div>
-          <div className="pt-2 border-t border-gray-200">
-            <p className="text-xs text-muted-foreground mb-1">Allergene:</p>
-            <p className="text-sm text-foreground">{foodDetails.allergens}</p>
-          </div>
+
+          {/* Notes/Allergens */}
+          {notes.length > 0 && (
+            <div className="pt-2 border-t border-gray-200">
+              <p className="text-xs text-muted-foreground mb-2">Hinweise & Allergene:</p>
+              <div className="flex flex-wrap gap-2">
+                {notes.map((note: string, index: number) => (
+                  <span 
+                    key={index}
+                    className="px-2 py-1 text-xs rounded-full bg-[#D5006D]/10 text-[#D5006D]"
+                  >
+                    {note}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
         </Card>
 
         {/* Rating Section */}

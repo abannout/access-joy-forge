@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, ChevronLeft, ChevronRight, Bell, Users, MapPin, Utensils, MessageCircle } from "lucide-react";
+import { Bell, MapPin, Utensils, MessageCircle, Loader2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -18,33 +18,8 @@ import {
   CarouselPrevious,
   type CarouselApi,
 } from "@/components/ui/carousel";
-
-const locations = [
-  "Mensa Deutz/Süd",
-  "Mensa Gummersbach",
-  "Mensa Südstadt"
-];
-
-const mensaMenus = {
-  "Mensa Deutz/Süd": [
-    { name: "Gemüsesuppe", category: "Vegetarisch", price: "3.50€" },
-    { name: "Schnitzel mit Pommes", category: "Fleisch", price: "4.20€" },
-    { name: "Hähnchen-Curry mit Reis", category: "Fleisch", price: "3.80€" },
-    { name: "Veggie Bowl", category: "Vegan", price: "4.00€" }
-  ],
-  "Mensa Gummersbach": [
-    { name: "Tomatensuppe", category: "Vegetarisch", price: "3.30€" },
-    { name: "Lasagne Bolognese", category: "Fleisch", price: "4.50€" },
-    { name: "Pasta Carbonara", category: "Fleisch", price: "4.10€" },
-    { name: "Buddha Bowl", category: "Vegan", price: "4.20€" }
-  ],
-  "Mensa Südstadt": [
-    { name: "Kürbissuppe", category: "Vegetarisch", price: "3.40€" },
-    { name: "Pizza Margherita", category: "Vegetarisch", price: "3.90€" },
-    { name: "Döner Kebab", category: "Fleisch", price: "4.30€" },
-    { name: "Falafel Wrap", category: "Vegan", price: "3.80€" }
-  ]
-};
+import { useMensaMeals, mensaLocations } from "@/hooks/useMensaMeals";
+import { MealCard } from "@/components/MealCard";
 
 const Mensa = () => {
   const navigate = useNavigate();
@@ -52,10 +27,10 @@ const Mensa = () => {
   const [isCapacityDialogOpen, setIsCapacityDialogOpen] = useState(false);
   const [carouselApi, setCarouselApi] = useState<CarouselApi>();
   const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
-  const [peopleCount, setPeopleCount] = useState<Record<string, number>>({
-    "Mensa Deutz/Süd": 23,
-    "Mensa Gummersbach": 15,
-    "Mensa Südstadt": 31
+  const [peopleCount, setPeopleCount] = useState<Record<number, number>>({
+    387: 23,
+    390: 15,
+    383: 31
   });
 
   const reviews = [
@@ -65,6 +40,10 @@ const Mensa = () => {
     "Freundliches Personal heute!",
     "Curry war richtig gut gewürzt!"
   ];
+
+  const currentLocation = mensaLocations[currentLocationIndex];
+  const { meals, isLoading, error, isClosed } = useMensaMeals(currentLocation.id);
+  const currentCount = peopleCount[currentLocation.id];
 
   useEffect(() => {
     if (!carouselApi) return;
@@ -82,23 +61,11 @@ const Mensa = () => {
 
     return () => clearInterval(timer);
   }, [reviews.length]);
-  
-  const currentLocation = locations[currentLocationIndex];
-  const currentMenu = mensaMenus[currentLocation];
-  const currentCount = peopleCount[currentLocation];
-
-  const handlePrevLocation = () => {
-    setCurrentLocationIndex((prev) => (prev - 1 + locations.length) % locations.length);
-  };
-
-  const handleNextLocation = () => {
-    setCurrentLocationIndex((prev) => (prev + 1) % locations.length);
-  };
 
   const handleEatingNow = () => {
     setPeopleCount(prev => ({
       ...prev,
-      [currentLocation]: prev[currentLocation] + 1
+      [currentLocation.id]: prev[currentLocation.id] + 1
     }));
     setIsCapacityDialogOpen(false);
   };
@@ -148,13 +115,13 @@ const Mensa = () => {
               loop: true,
             }}
           >
-            <CarouselContent>
-              {locations.map((location, index) => (
-                <CarouselItem key={index}>
+          <CarouselContent>
+              {mensaLocations.map((location, index) => (
+                <CarouselItem key={location.id}>
                   <div className="bg-white/20 backdrop-blur-md rounded-3xl p-4 border border-white/30 shadow-lg">
                     <div className="flex items-center justify-center gap-2 text-white">
                       <MapPin className="h-5 w-5" />
-                      <span className="text-base font-semibold">{location.replace("Mensa ", "")}</span>
+                      <span className="text-base font-semibold">{location.displayName}</span>
                     </div>
                   </div>
                 </CarouselItem>
@@ -168,16 +135,36 @@ const Mensa = () => {
 
       {/* Menu Items */}
       <main className="px-6 space-y-3">
-        {currentMenu.map((item, index) => (
-          <Card 
-            key={index}
-            onClick={() => navigate("/mensa-detail", { state: { item } })}
-            className="p-4 bg-white backdrop-blur-md border-none shadow-md hover:shadow-lg transition-all cursor-pointer rounded-3xl"
-          >
-            <div className="text-center">
-              <h3 className="font-semibold text-[#D5006D]">{item.name}</h3>
-            </div>
+        {isLoading && (
+          <div className="flex justify-center py-8">
+            <Loader2 className="h-8 w-8 animate-spin text-white" />
+          </div>
+        )}
+
+        {error && (
+          <Card className="p-4 bg-white/90 backdrop-blur-md border-none shadow-md rounded-3xl">
+            <p className="text-center text-red-500">Fehler beim Laden: {error}</p>
           </Card>
+        )}
+
+        {isClosed && (
+          <Card className="p-4 bg-white/90 backdrop-blur-md border-none shadow-md rounded-3xl">
+            <p className="text-center text-[#D5006D] font-semibold">
+              Die Mensa ist heute geschlossen.
+            </p>
+          </Card>
+        )}
+
+        {!isLoading && !error && !isClosed && meals.length === 0 && (
+          <Card className="p-4 bg-white/90 backdrop-blur-md border-none shadow-md rounded-3xl">
+            <p className="text-center text-[#D5006D]">
+              Keine Gerichte für heute verfügbar.
+            </p>
+          </Card>
+        )}
+
+        {!isLoading && !error && !isClosed && meals.map((meal) => (
+          <MealCard key={meal.id} meal={meal} />
         ))}
 
         {/* Capacity Button with Glass Effect */}
