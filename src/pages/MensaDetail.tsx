@@ -19,12 +19,25 @@ const MensaDetail = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
-  const foodItem = location.state?.item || { 
-    name: "Gericht", 
-    category: "Kategorie", 
-    price: "0.00€",
-    notes: [],
-    prices: { students: 0, employees: 0, others: 0 }
+  
+  // Redirect if no meal data was passed
+  useEffect(() => {
+    if (!location.state?.item) {
+      navigate("/mensa", { replace: true });
+    }
+  }, [location.state, navigate]);
+  
+  // Don't render if no meal data
+  if (!location.state?.item) {
+    return null;
+  }
+  
+  const foodItem = location.state.item as {
+    name: string;
+    category: string;
+    price: string;
+    notes: string[];
+    prices: { students?: number; employees?: number; others?: number; pupils?: number };
   };
   
   const [rating, setRating] = useState(0);
