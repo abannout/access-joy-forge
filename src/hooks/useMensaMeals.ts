@@ -43,7 +43,8 @@ export const useMensaMeals = (canteenId: number) => {
       setError(null);
       setIsClosed(false);
 
-      const today = formatDate(new Date());
+      // Using a specific date for testing (when mensa is open)
+      const today = "2025-11-25";
 
       try {
         const response = await fetch(
