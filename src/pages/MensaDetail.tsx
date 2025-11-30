@@ -20,26 +20,7 @@ const MensaDetail = () => {
   const location = useLocation();
   const { toast } = useToast();
   
-  // Redirect if no meal data was passed
-  useEffect(() => {
-    if (!location.state?.item) {
-      navigate("/mensa", { replace: true });
-    }
-  }, [location.state, navigate]);
-  
-  // Don't render if no meal data
-  if (!location.state?.item) {
-    return null;
-  }
-  
-  const foodItem = location.state.item as {
-    name: string;
-    category: string;
-    price: string;
-    notes: string[];
-    prices: { students?: number; employees?: number; others?: number; pupils?: number };
-  };
-  
+  // All hooks must be called before any conditional returns
   const [rating, setRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
   const [comment, setComment] = useState("");
@@ -68,6 +49,13 @@ const MensaDetail = () => {
     }
   ]);
 
+  // Redirect if no meal data was passed
+  useEffect(() => {
+    if (!location.state?.item) {
+      navigate("/mensa", { replace: true });
+    }
+  }, [location.state, navigate]);
+
   // Auto-rotate reviews every 5-10 seconds
   useEffect(() => {
     if (reviews.length === 0) return;
@@ -79,6 +67,19 @@ const MensaDetail = () => {
 
     return () => clearInterval(timer);
   }, [reviews.length]);
+
+  // Don't render if no meal data
+  if (!location.state?.item) {
+    return null;
+  }
+
+  const foodItem = location.state.item as {
+    name: string;
+    category: string;
+    price: string;
+    notes: string[];
+    prices: { students?: number; employees?: number; others?: number; pupils?: number };
+  };
 
   // Extract notes/allergens from API data
   const notes = foodItem.notes || [];
