@@ -169,10 +169,15 @@ const Mensa = () => {
 
         {/* Capacity Button with Glass Effect */}
         <button
-          onClick={() => setIsCapacityDialogOpen(true)}
-          className="w-full bg-[#D5006D] backdrop-blur-md border border-white/20 text-white hover:bg-[#B00058] transition-all shadow-lg rounded-3xl p-4 font-semibold"
+          onClick={() => !isClosed && setIsCapacityDialogOpen(true)}
+          disabled={isClosed}
+          className={`w-full backdrop-blur-md border border-white/20 text-white transition-all shadow-lg rounded-3xl p-4 font-semibold ${
+            isClosed 
+              ? 'bg-gray-400 cursor-not-allowed opacity-70' 
+              : 'bg-[#D5006D] hover:bg-[#B00058]'
+          }`}
         >
-          Mensa-Auslastung ansehen
+          {isClosed ? 'Mensa geschlossen' : 'Mensa-Auslastung ansehen'}
         </button>
 
         {/* Review Section - Auto-rotating */}
