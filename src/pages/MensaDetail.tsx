@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Card } from "@/components/ui/card";
+import { formatPrice } from "@/hooks/useMensaMeals";
 
 interface Review {
   id: number;
@@ -84,11 +85,6 @@ const MensaDetail = () => {
   // Extract notes/allergens from API data
   const notes = foodItem.notes || [];
   const prices = foodItem.prices || {};
-
-  const formatPrice = (price: number | undefined): string => {
-    if (price === undefined) return "N/A";
-    return `${price.toFixed(2)}€`;
-  };
 
   const handleSubmitReview = () => {
     if (rating === 0) {

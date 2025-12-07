@@ -31,6 +31,17 @@ const formatDate = (date: Date): string => {
   return date.toISOString().split("T")[0];
 };
 
+// Fixed formatPrice function with proper null/undefined handling
+export const formatPrice = (price: number | null | undefined): string => {
+  if (!price || price === null || price === undefined) {
+    return "N/A";
+  }
+  if (typeof price !== 'number') {
+    return "N/A";
+  }
+  return `${price.toFixed(2)}€`;
+};
+
 export const useMensaMeals = (canteenId: number) => {
   const [meals, setMeals] = useState<Meal[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -44,11 +55,12 @@ export const useMensaMeals = (canteenId: number) => {
       setIsClosed(false);
 
       // Using a specific date for testing (when mensa is open)
-      const today = "2025-11-25";
+      const today = new Date();
+      const formatted = today.toISOString().split("T")[0];
 
       try {
         const response = await fetch(
-          `${BASE_URL}/canteens/${canteenId}/days/${today}/meals`
+          `${BASE_URL}/canteens/${canteenId}/days/${formatted}/meals`
         );
 
         if (response.status === 404) {
@@ -75,9 +87,4 @@ export const useMensaMeals = (canteenId: number) => {
   }, [canteenId]);
 
   return { meals, isLoading, error, isClosed };
-};
-
-export const formatPrice = (price: number | undefined): string => {
-  if (price === undefined) return "N/A";
-  return `${price.toFixed(2)}€`;
 };
